@@ -143,7 +143,7 @@ class Status01():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
         timestamp : float
             The time the CAN controller received the data frame
 
@@ -164,7 +164,7 @@ class Status01():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
 
         """
 
@@ -189,7 +189,7 @@ class Status01():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
 
         """
 
@@ -212,7 +212,7 @@ class Status01():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
 
         """
 
@@ -227,7 +227,7 @@ class Status01():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
 
         """
 
@@ -241,6 +241,32 @@ class Status02():
     ----------
     timestamp : float
         The time the data frame was received
+    output_current : float
+        The output current
+    sensor_position : float
+
+    sensor_velocity : float
+
+    remote_loss_of_signal : int
+
+    hardware_esd_reset : int
+
+    reset_during_en : int
+
+    sensor_out_of_phase : int
+    
+    sensor_overflow : int
+
+    reverse_soft_limit : int
+
+    forward_soft_limit : int
+
+    reverse_limit_switch : int
+
+    forward_limit_switch : int
+
+    under_voltage : int
+
 
     Methods
     -------
@@ -256,6 +282,18 @@ class Status02():
 
         self.timestamp = 0.0
         self.output_current = 0.0
+        self.sensor_position = 0.0
+        self.sensor_velocity = 0.0
+        self.remote_loss_of_signal = 0
+        self.hardware_esd_reset = 0
+        self.reset_during_en = 0
+        self.sensor_out_of_phase = 0
+        self.sensor_overflow = 0
+        self.reverse_soft_limit = 0
+        self.forward_soft_limit = 0
+        self.reverse_limit_switch = 0
+        self.forward_limit_switch = 0
+        self.under_voltage = 0
 
     def DecodeData(self, data, timestamp):
         """
@@ -265,14 +303,17 @@ class Status02():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
         timestamp : float
             The time the CAN controller received the data frame
 
         """
 
         self.timestamp = timestamp
-        self.output_current = self._GetOutputCurrent(data)
+        self._GetOutputCurrent(data)
+        self._GetSensorPosition(data)
+        self._GetSensorVelocity(data)
+        self._GetStickyFaults(data)
 
     def _GetOutputCurrent(self, data):
         """
@@ -282,7 +323,7 @@ class Status02():
         Parameters
         ----------
         data : int
-            An integer input representing the 8-bytes of data
+            An integer input of the 8-bytes of data
 
         """
 
@@ -293,4 +334,80 @@ class Status02():
         raw <<= 8
         raw |= L
         raw >>= 6
-        return float(raw) * 0.125
+        self.output_current = float(raw) * 0.125
+
+    def _GetSensorPosition(self, data):
+        """
+        Decodes and sets the sensor position.  See GetSelectedSensorPosition
+        for the CTRE implementation.
+
+        Parameters
+        ----------
+        data : int
+            An integer input of the 8-bytes of data
+
+        """
+
+        H = (data >> 0)
+        M = (data >> 8)
+        L = (data >> 16)
+        PosDiv8 = (data >> (0x38 + 4)) & 1
+        raw = 0
+        raw |= H
+        raw <<= 8
+        raw |= M
+        raw <<= 8
+        raw |= L
+        raw <<= (32 - 24)
+        raw >>= (32 - 24)
+        if PosDiv8 == 1:
+            raw *= 8
+        self.sensor_position = raw
+
+    def _GetSensorVelocity(self, data):
+        """
+        Decodes and sets the sensor velocity.  See GetSelectedSensorVelocity
+        for the CTRE implementation.
+
+        Parameters
+        ----------
+        data : int
+            An integer input of the 8-bytes of data
+
+        """
+
+        H = (data >> 24)
+        L = (data >> 32)
+        VelDiv4 = (data >> (0x38 + 3)) & 1
+        raw = 0
+        raw |= H
+        raw <<= 8
+        raw |= L
+        raw <<= (32 - 16)
+        raw >>= (32 - 16)
+        if VelDiv4 == 1:
+            raw *= 4
+        self.sensor_velocity = raw
+
+    def _GetStickyFaults(self, data):
+        """
+        Decodes and sets the sticky faults.  See GetStickyFaults
+        for the CTRE implementation.
+
+        Parameters
+        ----------
+        data : int
+            An integer input of the 8-bytes of data
+
+        """
+
+        self.remote_loss_of_signal = ((data >> (0x38 + 0)) & 1)
+        self.hardware_esd_reset =    ((data >> (0x38 + 1)) & 1)
+        self.reset_during_en =       ((data >> (0x38 + 2)) & 1)
+        self.sensor_out_of_phase =   ((data >> (0x38 + 5)) & 1)
+        self.sensor_overflow =       ((data >> (0x38 + 6)) & 1)
+        self.reverse_soft_limit =    ((data >> (0x30 + 0)) & 1)
+        self.forward_soft_limit =    ((data >> (0x30 + 1)) & 1)
+        self.reverse_limit_switch =  ((data >> (0x30 + 2)) & 1)
+        self.forward_limit_switch =  ((data >> (0x30 + 3)) & 1)
+        self.under_voltage =         ((data >> (0x30 + 4)) & 1)
