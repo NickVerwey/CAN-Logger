@@ -1,0 +1,3 @@
+[
+  "tests/test_motor_controller.py::test_GetFaults"
+]
