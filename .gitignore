@@ -1,5 +1,8 @@
 .pytest_cache/
 tests/__pycache__/
 tests/.pytest_cache/
+tests/.coverage
 src/__pycache__/
 src/decoder/__pycache__/
+src/logger/__pycache__/
+src/examples/__pycache__/
