@@ -2,8 +2,11 @@ language: python
 
 python:
   - "3.6"
-
+install:
+  - pip install python-coveralls
 # Command to run tests  
 script:
   python3 -m pytest tests/test_motor_controller.py
+after success:
+  - coveralls
 

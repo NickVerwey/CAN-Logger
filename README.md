@@ -1,5 +1,7 @@
-# CAN-Logger
-This project is all about logging/parsing/plotting FRC robot CAN traffic. 
+[![Build Status](https://travis-ci.org/FRC4607/CAN-Logger.png?branch=master)]
+(https://travis-ci.org/FRC4607/CAN-Logger)
+[![Coverage Status](https://coveralls.io/repos/github/FRC4607/CAN-Logger/badge.svg?branch=master)](https://coveralls.io/github/FRC4607/CAN-Logger?branch=master)
+# CAN-LoggerThis project is all about logging/parsing/plotting FRC robot CAN traffic. 
 
 ## Project Goals and Purpse
 The primary goals of this project are to make CAN-bus logging simple, robust,
@@ -26,7 +28,6 @@ Embedded CAN-bus Logger.
 *Need to add a section about assembly.  Include CAD files for printed case.
 Describe the power options.  Could be powered off of USB or could be powered off
 of the robots VRM.
-
 
 ## Firmware
 The firmware that gets loaded onto the Teensy is stored in the src/logger/
