@@ -3,7 +3,7 @@ class MotorControllerCANStatus():
 
     The base arbitration ID for the TalonSRX is 0x02040000 and 0x01040000 for
     the VictorSPX.  The arbitration device ID is a 6-bit value between 0x00 and
-    0x3F.  The arbtration status ID's are as follows:
+    0x3F.  The arbitration status ID's are as follows:
 
         Status 1  = 0x041400 : Faults, Limit Switch State, Output Percent
         Status 2  = 0x041440 : Sticky Faults, Primary Sensor Position, Primary
@@ -22,10 +22,10 @@ class MotorControllerCANStatus():
         Status 14 = 0x041740
         Status 15 = 0x041780
 
-    The arbitraiton ID presented on the CAN bus is the logicl OR'ing of the base
+    The arbitration ID presented on the CAN bus is the logical OR'ing of the base
     ID, device ID, and the status ID.  All of these arbitration ID's will
     include 8-bytes of data.  The specific decoding of the data is handled by
-    the StatusXX() objects.  A bried description of the signals within the
+    the StatusXX() objects.  A brief description of the signals within the
     status frames are below:
 
 
