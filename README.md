@@ -25,7 +25,8 @@ Embedded CAN-bus Logger.
 
 *Need to add a section about assembly.  Include CAD files for printed case.
 Describe the power options.  Could be powered off of USB or could be powered off
-of the robots VRM.*
+of the robots VRM.
+
 
 ## Firmware
 The firmware that gets loaded onto the Teensy is stored in the src/logger/
