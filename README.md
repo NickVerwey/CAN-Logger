@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/FRC4607/CAN-Logger.png?branch=master)]
-(https://travis-ci.org/FRC4607/CAN-Logger)
+[![Build Status](https://travis-ci.org/FRC4607/CAN-Logger.png?branch=master)](https://travis-ci.org/FRC4607/CAN-Logger)
 [![Coverage Status](https://coveralls.io/repos/github/FRC4607/CAN-Logger/badge.svg?branch=master)](https://coveralls.io/github/FRC4607/CAN-Logger?branch=master)
 # CAN-LoggerThis project is all about logging/parsing/plotting FRC robot CAN traffic. 
 
