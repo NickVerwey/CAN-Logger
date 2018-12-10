@@ -2,13 +2,13 @@ language: python
 
 python:
   - "3.6"
-install:
-  - pip install coverage==4.4
-  - pip install pytest-cov
-  - pip install python-coveralls
+#install:
+#  - pip install pytest-cov
+#  - pip install python-coveralls
 # Command to run tests  
 script:
+  #python3 -m pytest --cov=src tests/test_motor_controller.py
   python3 -m pytest --cov=src tests/test_motor_controller.py
-after_success:
-  - coveralls
+#after_success:
+#  - coveralls
 
