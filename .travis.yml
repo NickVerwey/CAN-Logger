@@ -3,8 +3,8 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install pytest-cov
   - pip install coverage==4.3
+  - pip install pytest-cov
   - pip install python-coveralls
 # Command to run tests  
 script:
