@@ -5,22 +5,22 @@ class MotorControllerCANStatus():
     the VictorSPX.  The arbitration device ID is a 6-bit value between 0x00 and
     0x3F.  The arbitration status ID's are as follows:
 
-        Status 1  = 0x041400 : Faults, Limit Switch State, Output Percent
-        Status 2  = 0x041440 : Sticky Faults, Primary Sensor Position, Primary
+        Status 1  = 0x1400 : Faults, Limit Switch State, Output Percent
+        Status 2  = 0x1440 : Sticky Faults, Primary Sensor Position, Primary
                                Sensor Velocity, Output Current
-        Status 3  = 0x041480
-        Status 4  = 0x0414C0
-        Status 5  = 0x041500
-        Status 6  = 0x041540
-        Status 7  = 0x041580
-        Status 8  = 0x0415C0
-        Status 9  = 0x041600
-        Status 10 = 0x041640
-        Status 11 = 0x041680
-        Status 12 = 0x0416C0
-        Status 13 = 0x041700
-        Status 14 = 0x041740
-        Status 15 = 0x041780
+        Status 3  = 0x1480
+        Status 4  = 0x14C0
+        Status 5  = 0x1500
+        Status 6  = 0x1540
+        Status 7  = 0x1580
+        Status 8  = 0x15C0
+        Status 9  = 0x1600
+        Status 10 = 0x1640
+        Status 11 = 0x1680
+        Status 12 = 0x16C0
+        Status 13 = 0x1700
+        Status 14 = 0x1740
+        Status 15 = 0x1780
 
     The arbitration ID presented on the CAN bus is the logical OR'ing of the base
     ID, device ID, and the status ID.  All of these arbitration ID's will
@@ -35,6 +35,8 @@ class MotorControllerCANStatus():
         The decoded status 1 signals
     status2 : dict
         The decoded status 2 signals
+    ...
+    ...
 
 
     Methods
@@ -43,7 +45,8 @@ class MotorControllerCANStatus():
         Decodes the data frame and updates the status1 dictionary
     DecodeStatus2(data, timestamp)
         Decodes the data frame and updates the status2 dictionary
-
+    ...
+    ...
 
     References
     ----------
