@@ -28,8 +28,6 @@ class PDPCANStatus():
 
     Methods
     -------
-    Main(data, timestamp)
-        Runs the DecodeStatusX methods in succession
     DecodeStatus1(data, timestamp)
         Runs GetCurrent() for the relevent data and updates the status1 
         dictionary
@@ -37,7 +35,7 @@ class PDPCANStatus():
         Runs GetCurrent() for the relevent data and updates the status2
         dictionary
     DecodeStatus3(data, timestamp)
-        Runs GetCurrent as well as GetVoltage() for the relevent data and
+        Runs GetCurrent() as well as GetVoltage() for the relevent data and
         updates the status3 dictionary 
     GetCurrent(data, arbid)
         Decodes the data provided by DecodeStatusX methods to determine the
@@ -59,51 +57,33 @@ class PDPCANStatus():
         """
         
         self.status1 = {
-            'arbid'     : 0x1400,
-            'timestamp' : 0,
-            'channel_0' : 0,
-            'channel_1' : 0,
-            'channel_2' : 0,
-            'channel_3' : 0,
-            'channel_4' : 0,
-            'channel_5' : 0
+            'timestamp' : 0.0,
+            'chan_0' : 0.0,
+            'chan_1' : 0.0,
+            'chan_2' : 0.0,
+            'chan_3' : 0.0,
+            'chan_4' : 0.0,
+            'chan_5' : 0.0
 
         }
         self.status2 = {
-            'arbid'      : 0x1440,
-            'timestamp'  : 0,
-            'channel_6'  : 0,
-            'channel_7'  : 0,
-            'channel_8'  : 0,
-            'channel_9'  : 0,
-            'channel_10' : 0,
-            'channel_11' : 0
+            'timestamp'  : 0.0,
+            'chan_6' : 0.0,
+            'chan_7' : 0.0,
+            'chan_8' : 0.0,
+            'chan_9' : 0.0,
+            'chan_10' : 0.0,
+            'chan_11' : 0.0
         }
         self.status3 = {
-            'arbid'      : 0x1480,
-            'timestamp'  : 0,
-            'channel_12' : 0,
-            'channel_13' : 0,
-            'channel_14' : 0,
-            'channel_15' : 0,
-            'voltage'    : 0
+            'timestamp'  : 0.0,
+            'chan_12' : 0.0,
+            'chan_13' : 0.0,
+            'chan_14' : 0.0,
+            'chan_15' : 0.0,
+            'voltage'    : 0.0
         }
 
-
-    def Main(self, data, timestamp):
-        """
-        Runs through each DecodeStatusX method in succession
-        
-        Parameters
-        ----------
-        data : int
-            An integer input of the 8-bytes of data
-        timestamp : float
-            The time the CAN controller received the data frame
-        """
-        self.DecodeStatus1(data, timestamp)
-        self.DecodeStatus2(data, timestamp)
-        self.DecodeStatus3(data, timestamp)
 
     def DecodeStatus1(self, data, timestamp):
         """
@@ -118,14 +98,9 @@ class PDPCANStatus():
             The time the CAN controller received the data frame
         """
         self.status1['timestamp'] = timestamp
-        arbid = self.status1['arbid']
-        CurrentList = self.GetCurrent(data, arbid)
-        self.status1['channel_0'] = CurrentList[0]
-        self.status1['channel_1'] = CurrentList[1]
-        self.status1['channel_2'] = CurrentList[2]
-        self.status1['channel_3'] = CurrentList[3]
-        self.status1['channel_4'] = CurrentList[4]
-        self.status1['channel_5'] = CurrentList[5]
+        CurrentList = self.GetCurrent(data)
+        keys = ['chan_0', 'chan_1','chan_2','chan_3','chan_4','chan_5']
+        self.status1.update(dict(zip(keys, CurrentList)))
         
     def DecodeStatus2(self, data, timestamp):
         """
@@ -140,14 +115,9 @@ class PDPCANStatus():
             The time the CAN controller received the data frame
         """        
         self.status2['timestamp'] = timestamp
-        arbid = self.status2['arbid']
-        CurrentList = self.GetCurrent(data, arbid)
-        self.status2['channel_6'] = CurrentList[0]
-        self.status2['channel_7'] = CurrentList[1]
-        self.status2['channel_8'] = CurrentList[2]
-        self.status2['channel_9'] = CurrentList[3]
-        self.status2['channel_10'] = CurrentList[4]
-        self.status2['channel_11'] = CurrentList[5]
+        CurrentList = self.GetCurrent(data)
+        keys = ['chan_6','chan_7','chan_8','chan_9','chan_10','chan_111']
+        self.status2.update(dict(zip(keys, CurrrentList)))
         
     def DecodeStatus3(self, data, timestamp):
         """
@@ -162,15 +132,11 @@ class PDPCANStatus():
             The time the CAN controller received the data frame
         """        
         self.status3['timestamp'] = timestamp
-        arbid = self.status3['arbid']
-        CurrentList = self.GetCurrent(data, arbid)
-        self.status3['channel_12'] = CurrentList[0]
-        self.status3['channel_13'] = CurrentList[1]
-        self.status3['channel_14'] = CurrentList[2]
-        self.status3['channel_15'] = CurrentList[3]
-        self.status3['voltage'] = self.GetVoltage(data, arbid)
+        CurrentList = self.GetCurrent(data)
+        keys = ['chan_12','chan_13','chan_14', 'chan_15']
+        self.status3.update(dict(zip(keys, CurrentList)))
         
-    def GetCurrent(self, data, arbid):
+    def GetCurrent(self, data):
         """
         Decodes the 8-byte CAN data frame to find the current for each channel
         and returns a list of results to the DecodeStatusX that called the method
@@ -183,8 +149,11 @@ class PDPCANStatus():
             An integer input of the 8-bytes of data
         """        
         CurrentScalar = 0.125
-        CurrentList = [0,0,0,0,0,0]
-        CurrentList[0] = data
+        CurrentList = [0.0,0.0,0.0,0.0,0.0,0.0]
+        
+        hexdata = hex(data)
+        
+        CurrentList[0] = int(str(hexdata)[0:2] + str(hexdata)[-2:],16)
         CurrentList[0] <<= 2
         CurrentList[0] |= ((data >> 14) & 0x03)
         
@@ -198,9 +167,9 @@ class PDPCANStatus():
         
         CurrentList[3] = ((data >> 24) & 0x03)
         CurrentList[3] <<= 8
-        CurrentList[3] |= (data >> 32)
+        CurrentList[3] |= (int(str(hexdata)[0:2] + str(hexdata)[-2:],16) >> 32)
         
-        CurrentList[4] = (data >> 40)
+        CurrentList[4] = (int(str(hexdata)[0:2] + str(hexdata)[-2:],16) >> 40)
         CurrentList[4] <<= 2
         CurrentList[4] |= ((data >> 54) & 0x03)
         
@@ -208,10 +177,7 @@ class PDPCANStatus():
         CurrentList[5] <<= 4
         CurrentList[5] |= ((data >> 60) & 0x0F)  
         
-        x = 0
-        for item in CurrentList:
-            CurrentList[x] = item * CurrentScalar
-            x = x + 1
+        CurrentList = [i * CurrentScalar for i in CurrentList]
         
         return CurrentList
     
@@ -225,8 +191,10 @@ class PDPCANStatus():
         data : int
             An integer input of the 8-bytes of data
         """          
-        VoltNum = data >> 48
-        retval = .05 * VoltNum + 4
+        VoltNum = hex(data >> 48)
+        VoltNum = int(str(VoltNum)[0:2] + str(VoltNum)[-2:],16)
+        
+        retval = (.05 * VoltNum) + 4
         return retval
     
     
@@ -234,4 +202,6 @@ class PDPCANStatus():
 For the purpose of testing. Allows for arbitrary data to be input.
 """
 #py = PDPCANStatus()
-#py.Main(0x00000000c0000000, 4)
+#data = 0x56adff0000000000
+#timestamp = 2
+#py.DecodeStatus1(data,timestamp)
